@@ -1,7 +1,13 @@
-var express = require('express'),
-  passport = require('passport'),
-  util = require('util'),
-  ArcGISStrategy = require('passport-arcgis').Strategy;
+var express = require('express');
+var app = express();
+var logger = require('express-logger');
+var cookieParser = require('cookie-parser');
+var methodOverride = require('method-override');
+var session = require('express-session')
+
+var passport = require('passport');
+var util = require('util');
+var ArcGISStrategy = require('passport-arcgis').Strategy;
 
 var ARCGIS_CLIENT_ID = "UaGPPkRbGmBV6GTK";
 var ARCGIS_CLIENT_SECRET = "ba3f18c3da8c42ce833cc006c7afdc5e";
@@ -45,28 +51,24 @@ passport.use(new ArcGISStrategy({
   }
 ));
 
-
-
-var app = express.createServer();
+app.listen(3000);
 
 // configure Express
-app.configure(function() {
-  app.set('views', __dirname + '/views');
-  app.set('view engine', 'ejs');
-  app.use(express.logger());
-  app.use(express.cookieParser());
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-  app.use(express.session({
-    secret: 'keyboard cat'
-  }));
-  // Initialize Passport!  Also use passport.session() middleware, to support
-  // persistent login sessions (recommended).
-  app.use(passport.initialize());
-  app.use(passport.session());
-  app.use(app.router);
-  app.use(express.static(__dirname + '/public'));
-});
+app.set('views', __dirname + '/views');
+app.set('view engine', 'ejs');
+// app.use(logger({path: '/logfile.txt'}));
+app.use(cookieParser());
+app.use(methodOverride());
+app.use(session({
+  resave: true,
+  saveUninitialized: true,
+  secret: 'keyboard cat'
+}));
+// Initialize Passport!  Also use passport.session() middleware, to support
+// persistent login sessions (recommended).
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(express.static(__dirname + '/public'));
 
 
 app.get('/', function(req, res) {
@@ -116,9 +118,6 @@ app.get('/logout', function(req, res) {
   req.logout();
   res.redirect('/');
 });
-
-app.listen(3000);
-
 
 // Simple route middleware to ensure user is authenticated.
 //   Use this route middleware on any resource that needs to be protected.  If

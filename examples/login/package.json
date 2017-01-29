@@ -2,8 +2,13 @@
   "name": "passport-arcgis-examples-login",
   "version": "0.0.0",
   "dependencies": {
-    "express": "*",
+    "body-parser": "^1.16.0",
+    "cookie-parser": "^1.4.3",
     "ejs": "*",
+    "express": "*",
+    "express-logger": "0.0.3",
+    "express-session": "^1.15.0",
+    "method-override": "^2.3.7",
     "passport": "*",
     "passport-arcgis": "*"
   }
